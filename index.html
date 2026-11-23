@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-bs-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Afro Heritage Consultancies — Touching Minds, Educating Hearts</title>
+    <meta name="description" content="Tuition, digital skills training and community programs in Ngong, Kenya. Browse programs and events, see schedules and fees, and enrol in under two minutes." />
+    <meta name="theme-color" content="#D3D88E" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/images/icon-192.png" />
+    <meta property="og:title" content="Afro Heritage Consultancies" />
+    <meta property="og:description" content="Touching Minds, Educating Hearts — tuition, digital skills and community programs in Ngong." />
+    <meta property="og:image" content="/images/logo-dark.jpg" />
+    <script>
+      // Apply the saved (or system) theme before first paint to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem("ahc-theme");
+          if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", t);
+          document.documentElement.setAttribute("data-bs-theme", t);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

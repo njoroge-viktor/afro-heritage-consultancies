@@ -1,0 +1,217 @@
+/*
+ * Layer order: Tailwind's reset (base) sits BELOW Bootstrap's component layer,
+ * so Bootstrap components keep their padding/borders, while Tailwind utilities
+ * (prefixed "tw:") still win over both.
+ */
+@layer theme, base, bootstrap, components, utilities;
+
+@import "tailwindcss" prefix(tw);
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------- Brand tokens (swap in dark mode) ---------- */
+:root {
+  --ahc-cream: #fbfaf3;     /* page background */
+  --ahc-surface: #ffffff;   /* cards, inputs */
+  --ahc-ink: #231f20;       /* text */
+  --ahc-sage-50: #f8f9ec;
+  --ahc-sage-100: #eff1d6;
+  --ahc-sage-200: #e2e6b4;
+  --ahc-sage-300: #d3d88e;
+  --ahc-sage-400: #bfc66a;
+  --ahc-sage-900: #424628;
+  --ahc-rust: #9c4a22;
+  --ahc-rust-dark: #7a3818;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --ahc-cream: #141311;
+  --ahc-surface: #1f1d1a;
+  --ahc-ink: #f1efe6;
+  --ahc-sage-50: #1b1d13;
+  --ahc-sage-100: #22251a;
+  --ahc-sage-200: #33371f;
+  --ahc-sage-300: #4b5027;
+  --ahc-sage-400: #5d6331;
+  --ahc-sage-900: #e2e6b4;
+  --ahc-rust: #c4602f;
+  --ahc-rust-dark: #e08a5b;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-cream: var(--ahc-cream);
+  --color-surface: var(--ahc-surface);
+  --color-ink: var(--ahc-ink);
+  --color-sage-50: var(--ahc-sage-50);
+  --color-sage-100: var(--ahc-sage-100);
+  --color-sage-200: var(--ahc-sage-200);
+  --color-sage-300: var(--ahc-sage-300);
+  --color-sage-400: var(--ahc-sage-400);
+  --color-sage-900: var(--ahc-sage-900);
+  --color-rust: var(--ahc-rust);
+  --color-rust-dark: var(--ahc-rust-dark);
+}
+
+@theme {
+  --color-sage-500: #a2aa4c;
+  --color-sage-600: #7f863a;
+  --color-sage-700: #616631;
+  --color-sage-800: #4e522b;
+
+  /* Fixed colours for sections that stay dark in both themes */
+  --color-night: #1b1817;
+  --color-paper: #fbfaf3;
+  --color-leaf: #d3d88e;
+  --color-whatsapp: #25d366;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+}
+
+/* Bootstrap components read these, so they follow the site theme too */
+:root,
+[data-theme="dark"] {
+  --bs-body-bg: var(--ahc-surface);
+  --bs-body-color: var(--ahc-ink);
+  --bs-border-color: color-mix(in oklab, var(--ahc-ink) 12%, transparent);
+  --bs-primary: var(--ahc-rust);
+  --bs-primary-rgb: 156, 74, 34;
+  --bs-font-sans-serif: "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  overflow-x: clip; /* slide-in elements start off-screen; never allow sideways scrolling */
+  background: var(--ahc-cream);
+  color: var(--ahc-ink);
+  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+h1, h2, h3 {
+  font-family: "Fraunces", Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ahc-rust);
+  outline-offset: 2px;
+}
+
+/* ---------- Font icons ---------- */
+.ficon {
+  display: inline-block;
+  line-height: 1;
+  flex-shrink: 0;
+  vertical-align: -0.125em;
+  text-align: center;
+}
+
+.dots {
+  background-image: radial-gradient(rgb(156 74 34 / 0.35) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+}
+
+/* ---------- Hover effects ---------- */
+.lift {
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+.lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 45px -18px rgb(98 102 49 / 0.45);
+}
+
+/* arrow / icon that slides when its parent is hovered */
+.nudge { transition: transform 0.3s ease; }
+.lift:hover .nudge,
+a:hover > .nudge,
+button:hover > .nudge { transform: translateX(5px); }
+
+/* icon bubble that tilts and pops on hover */
+.icon-pop { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.lift:hover .icon-pop,
+a:hover .icon-pop { transform: rotate(-8deg) scale(1.12); }
+
+/* image zoom inside a clipped frame */
+.zoom { overflow: hidden; }
+.zoom img { transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.zoom:hover img { transform: scale(1.06); }
+
+/* underline that slides in from the left */
+.link-slide {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.35s ease;
+}
+.link-slide:hover,
+.link-slide.active { background-size: 100% 2px; }
+
+/* footer-style links that slide right */
+.slide-right { display: inline-block; transition: transform 0.25s ease, color 0.25s ease; }
+.slide-right:hover { transform: translateX(6px); }
+
+/* light sweep across buttons */
+.shine { position: relative; overflow: hidden; isolation: isolate; }
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 -60%;
+  width: 45%;
+  transform: skewX(-20deg);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.35), transparent);
+  transition: left 0.6s ease;
+  z-index: -1;
+}
+.shine:hover::after { left: 120%; }
+
+/* ---------- Slide-in on scroll ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 36px, 0);
+  transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal="left"] { transform: translate3d(-56px, 0, 0); }
+[data-reveal="right"] { transform: translate3d(56px, 0, 0); }
+[data-reveal="zoom"] { transform: scale(0.92); }
+[data-reveal].is-visible { opacity: 1; transform: none; }
+
+/* entrance for the hero on page load */
+@keyframes slide-in-left { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
+@keyframes slide-in-right { from { opacity: 0; transform: translateX(48px); } to { opacity: 1; transform: none; } }
+.enter-left { animation: slide-in-left 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.enter-right { animation: slide-in-right 0.9s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.marquee-pause:hover .tw\:animate-marquee { animation-play-state: paused; }
+
+/* ---------- Bootstrap component touches ---------- */
+.carousel-indicators [data-bs-target] { width: 28px; height: 5px; border-radius: 999px; }
+/* Slides are always dark, so keep Bootstrap's controls white in both themes */
+[data-bs-theme="dark"] .carousel .carousel-control-prev-icon,
+[data-bs-theme="dark"] .carousel .carousel-control-next-icon { filter: none; }
+[data-bs-theme="dark"] .carousel .carousel-indicators [data-bs-target] { background-color: #fff; }
+.accordion { --bs-accordion-active-bg: var(--ahc-sage-200); --bs-accordion-active-color: var(--ahc-ink); --bs-accordion-btn-focus-box-shadow: 0 0 0 0.25rem rgb(156 74 34 / 0.25); --bs-accordion-border-radius: 1.25rem; --bs-accordion-inner-border-radius: 1.25rem; }
+.accordion-button { font-weight: 600; font-family: inherit; }
+[data-theme="dark"] .accordion-button::after { filter: invert(1) brightness(1.4); }
+.offcanvas { --bs-offcanvas-bg: var(--ahc-cream); --bs-offcanvas-color: var(--ahc-ink); }
+.tooltip { --bs-tooltip-bg: var(--ahc-ink); --bs-tooltip-color: var(--ahc-cream); font-family: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  [data-reveal] { opacity: 1; transform: none; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
