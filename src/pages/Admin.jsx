@@ -1,15 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   IcCalendarPlus, IcDownload, IcExternalLink, IcInbox, IcLock, IcLogOut, IcMail, IcMailOpen, IcPencil, IcPhone, IcPlus,
-  IcRefreshCw, IcSearch, IcStickyNote, IcTarget, IcTimer, IcTrash2, IcTriangleAlert,
+  IcInfo, IcRefreshCw, IcSearch, IcStickyNote, IcTarget, IcTimer, IcTrash2, IcTriangleAlert, IcUsers,
 } from "../components/icons";
 import { IcWhatsapp } from "../components/icons";
 import { Badge, Button, Container, ErrorState, Field, Loading, Modal, cx, inputClass, useToast } from "../components/ui";
-import { api, seatsLeft, useResource } from "../lib/api";
-import { CATEGORIES, EVENT_TYPES, STATUSES, formatDate, formatFee, timeAgo } from "../lib/site";
+import { api, exportDb, hasLocalEdits, importDb, resetLocalData, seatsLeft, useResource } from "../lib/api";
+import { CATEGORIES, EVENT_TYPES, STATUSES, formatDate, formatFee, timeAgo, todayISO, validPhone } from "../lib/site";
 
-// NOTE: client-side gate only. json-server has no auth — put real auth in front of the API before going public.
+// NOTE: client-side gate only — it hides the dashboard, it does not secure data. There is no backend:
+// data comes from public/db.json and staff changes are stored in this browser (see lib/api.js).
 const PASSCODE = import.meta.env.VITE_ADMIN_PASSCODE || "ahc-admin";
 const KEY = "ahc-admin-ok";
 const DAY = 864e5;
@@ -49,6 +50,121 @@ export default function Admin() {
   return <Dashboard onLogout={() => { sessionStorage.removeItem(KEY); setOk(false); }} />;
 }
 
+/* ---------- No-backend data controls ---------- */
+function DataPanel() {
+  const toast = useToast();
+  const [dirty, setDirty] = useState(false);
+  const [confirm, setConfirm] = useState(false);
+  const file = useRef(null);
+  useEffect(() => {
+    const check = () => hasLocalEdits().then(setDirty).catch(() => {});
+    check();
+    window.addEventListener("ahc-db-change", check);
+    return () => window.removeEventListener("ahc-db-change", check);
+  }, []);
+
+  const download = async () => {
+    const data = await exportDb();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2) + "\n"], { type: "application/json" }));
+    a.download = "db.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast({ tone: "success", title: "db.json downloaded", desc: "Replace public/db.json with it and redeploy to publish." });
+  };
+
+  const onImport = async (e) => {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f) return;
+    try {
+      const done = await importDb(JSON.parse(await f.text()));
+      toast({ tone: "success", title: "Data imported", desc: done.join(", ") });
+    } catch (err) {
+      toast({ tone: "error", title: "Import failed", desc: err.message });
+    }
+  };
+
+  return (
+    <div className="tw:mt-6 tw:flex tw:flex-col tw:gap-4 tw:rounded-3xl tw:border tw:border-sky-500/30 tw:bg-sky-500/10 tw:p-5 tw:lg:flex-row tw:lg:items-center">
+      <IcInfo className="tw:h-6 tw:w-6 tw:text-sky-600" />
+      <div className="tw:flex-1 tw:text-sm">
+        <p className="tw:font-semibold">This site has no backend — data comes from <code className="tw:rounded tw:bg-ink/10 tw:px-1">db.json</code>.</p>
+        <p className="tw:mt-1 tw:text-ink/70">
+          Your changes are saved in <b>this browser only</b>. Visitors send enrollment requests and messages to AHC on WhatsApp — log them here to track them.
+          To publish program or event changes, export <code className="tw:rounded tw:bg-ink/10 tw:px-1">db.json</code>, replace <code className="tw:rounded tw:bg-ink/10 tw:px-1">public/db.json</code> and redeploy.
+          {dirty && <b className="tw:text-amber-700 tw:dark:text-amber-400"> You have unpublished program/event changes.</b>}
+        </p>
+      </div>
+      <div className="tw:flex tw:flex-wrap tw:gap-2">
+        <Button size="sm" onClick={download}><IcDownload /> Export db.json</Button>
+        <Button size="sm" variant="outline" onClick={() => file.current.click()}>Import</Button>
+        <Button size="sm" variant="ghost" onClick={() => setConfirm(true)}><IcRefreshCw /> Discard local changes</Button>
+        <input ref={file} type="file" accept="application/json,.json" onChange={onImport} className="tw:hidden" aria-label="Import db.json" />
+      </div>
+      <Modal open={confirm} onClose={() => setConfirm(false)} title="Discard local changes?">
+        <p className="tw:text-sm tw:text-ink/70">Everything saved in this browser (logged requests, messages, program and event edits) is removed, and the site goes back to the published db.json. Export first if you want a copy.</p>
+        <div className="tw:mt-6 tw:flex tw:justify-end tw:gap-2">
+          <Button variant="outline" onClick={() => setConfirm(false)}>Cancel</Button>
+          <Button variant="danger" onClick={async () => { await resetLocalData(); setConfirm(false); toast({ tone: "success", title: "Back to the published db.json" }); }}>Discard</Button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
+/* Staff log a request that arrived on WhatsApp or by phone */
+function LogRequest({ programs, events, onDone }) {
+  const toast = useToast();
+  const [f, setF] = useState({ name: "", phone: "", target: "", learnerLevel: "", message: "" });
+  const [err, setErr] = useState({});
+  const set = (k) => (e) => setF((s) => ({ ...s, [k]: e.target.value, ...(k === "target" ? { learnerLevel: "" } : {}) }));
+  const [kind, raw] = f.target.split(":");
+  const event = kind === "e" ? events.find((e) => e.id === Number(raw)) : null;
+  const program = kind === "p" ? programs.find((p) => p.id === Number(raw)) : programs.find((p) => p.id === event?.programId);
+  const submit = async (e) => {
+    e.preventDefault();
+    const er = {};
+    if (f.name.trim().length < 2) er.name = "Add a name.";
+    if (!validPhone(f.phone)) er.phone = "Add a valid phone number.";
+    if (!f.target) er.target = "Choose a program or event.";
+    setErr(er);
+    if (Object.keys(er).length) return;
+    const now = new Date().toISOString();
+    await api.post("/enrollments", {
+      name: f.name.trim(), phone: f.phone.trim(),
+      programId: program?.id ?? null, programTitle: program?.title ?? null,
+      eventId: event?.id ?? null, eventTitle: event?.title ?? null,
+      learnerLevel: f.learnerLevel || null, message: f.message.trim(),
+      status: "new", notes: "Logged from WhatsApp/phone", createdAt: now, updatedAt: now,
+    });
+    toast({ tone: "success", title: "Request logged", desc: f.name.trim() });
+    onDone();
+  };
+  return (
+    <form noValidate onSubmit={submit} className="tw:space-y-4">
+      <div className="tw:grid tw:gap-4 tw:sm:grid-cols-2">
+        <Field label="Name" htmlFor="lr-name" required error={err.name}><input id="lr-name" value={f.name} onChange={set("name")} className={inputClass} /></Field>
+        <Field label="Phone" htmlFor="lr-phone" required error={err.phone}><input id="lr-phone" type="tel" value={f.phone} onChange={set("phone")} className={inputClass} /></Field>
+      </div>
+      <Field label="Program or event" htmlFor="lr-target" required error={err.target}>
+        <select id="lr-target" value={f.target} onChange={set("target")} className={inputClass}>
+          <option value="">Select…</option>
+          <optgroup label="Programs">{programs.map((p) => <option key={p.id} value={`p:${p.id}`}>{p.title}</option>)}</optgroup>
+          <optgroup label="Upcoming events">{events.filter((e) => e.date >= todayISO()).map((e) => <option key={e.id} value={`e:${e.id}`}>{e.title}</option>)}</optgroup>
+        </select>
+      </Field>
+      {program?.levels?.length > 0 && (
+        <Field label="Learner level" htmlFor="lr-level">
+          <select id="lr-level" value={f.learnerLevel} onChange={set("learnerLevel")} className={inputClass}><option value="">—</option>{program.levels.map((l) => <option key={l}>{l}</option>)}</select>
+        </Field>
+      )}
+      <Field label="Message / details" htmlFor="lr-msg"><textarea id="lr-msg" rows={3} value={f.message} onChange={set("message")} className={inputClass} /></Field>
+      <div className="tw:flex tw:justify-end tw:gap-2"><Button variant="outline" onClick={onDone}>Cancel</Button><Button type="submit">Log request</Button></div>
+    </form>
+  );
+}
+
 function Stat({ icon: I, label, value, sub, tone = "" }) {
   return (
     <div className={cx("tw:rounded-3xl tw:bg-surface tw:p-5 tw:ring-1 tw:ring-ink/10", tone)}>
@@ -65,12 +181,6 @@ function Dashboard({ onLogout }) {
   const programs = useResource("/programs");
   const events = useResource("/events?_sort=date&_order=asc");
   const [tab, setTab] = useState("requests");
-
-  // Refresh requests and messages every 30 seconds so new ones show up.
-  useEffect(() => {
-    const id = setInterval(() => { enrollments.reload(); messages.reload(); }, 30000);
-    return () => clearInterval(id);
-  }, [enrollments.reload, messages.reload]);
 
   const stats = useMemo(() => {
     const list = enrollments.data ?? [];
@@ -103,6 +213,8 @@ function Dashboard({ onLogout }) {
           <Button variant="ghost" size="sm" onClick={onLogout}><IcLogOut /> Log out</Button>
         </div>
       </div>
+
+      <DataPanel />
 
       <div className="tw:mt-8 tw:grid tw:gap-4 tw:sm:grid-cols-2 tw:lg:grid-cols-4">
         <Stat icon={IcTarget} label={`Requests · last ${GOAL.weeks} weeks`} value={`${stats.recent}/${GOAL.requests}`}
@@ -147,6 +259,7 @@ function Requests({ res, programs, events }) {
   const [noteFor, setNoteFor] = useState(null);
   const [note, setNote] = useState("");
   const [del, setDel] = useState(null);
+  const [logOpen, setLogOpen] = useState(false);
 
   if (res.loading && !res.data) return <Loading />;
   if (res.error) return <ErrorState onRetry={res.reload} />;
@@ -192,10 +305,15 @@ function Requests({ res, programs, events }) {
           <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, phone, message…" aria-label="Search requests" className={cx(inputClass, "tw:py-2 tw:pl-9")} />
         </div>
         <Button variant="outline" size="sm" onClick={exportCsv} disabled={!list.length}><IcDownload /> Export CSV</Button>
+        <Button size="sm" onClick={() => setLogOpen(true)}><IcUsers /> Log WhatsApp request</Button>
       </div>
+      <Modal open={logOpen} onClose={() => setLogOpen(false)} title="Log a request" wide>
+        <p className="tw:mb-5 tw:text-sm tw:text-ink/65">Record a request that came in on WhatsApp or by phone so it shows up in tracking and stats.</p>
+        <LogRequest programs={programs} events={events} onDone={() => setLogOpen(false)} />
+      </Modal>
 
       {!list.length ? (
-        <p className="tw:rounded-3xl tw:border tw:border-dashed tw:border-ink/20 tw:p-10 tw:text-center tw:text-ink/60">No enrollment requests {status !== "all" ? `marked “${status}”` : "yet"}.</p>
+        <p className="tw:rounded-3xl tw:border tw:border-dashed tw:border-ink/20 tw:p-10 tw:text-center tw:text-ink/60">No enrollment requests {status !== "all" ? `marked “${status}”` : "yet"}. Requests arrive on WhatsApp — use “Log WhatsApp request” to track them here.</p>
       ) : (
         <div className="tw:space-y-3">
           {list.map((r) => {

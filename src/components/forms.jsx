@@ -2,9 +2,9 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { IcCircleCheck } from "./icons";
 import { IcWhatsapp } from "./icons";
-import { Button, Field, inputClass, useToast } from "./ui";
+import { Button, Field, btn, inputClass, useToast } from "./ui";
 import { api } from "../lib/api";
-import { CATEGORIES, formatDate, todayISO, validPhone, whatsappLink } from "../lib/site";
+import { CATEGORIES, SITE, formatDate, todayISO, validPhone, whatsappLink } from "../lib/site";
 
 /**
  * Enrollment request form → POST /enrollments
@@ -57,10 +57,20 @@ export function EnrollmentForm({ programs = [], events = [], initial = "", compa
         createdAt: now,
         updatedAt: now,
       });
-      setDone({ name: f.name.trim().split(" ")[0], what: event?.title ?? program?.title });
-      toast({ tone: "success", title: "Request received", desc: "We'll call or WhatsApp you within 24 hours." });
+      const what = event ? `${event.title} (${formatDate(event.date)})` : program?.title;
+      const text = [
+        "Hello Afro Heritage Consultancies, I'd like to enrol.",
+        "",
+        `Name: ${f.name.trim()}`,
+        `Phone: ${f.phone.trim()}`,
+        `${event ? "Event" : "Program"}: ${what}`,
+        f.learnerLevel && `Level: ${f.learnerLevel}`,
+        f.message.trim() && `Message: ${f.message.trim()}`,
+      ].filter((x) => x !== false && x !== "").join("\n");
+      setDone({ name: f.name.trim().split(" ")[0], what, link: whatsappLink(text) });
+      toast({ tone: "info", title: "One last step", desc: "Send your request to AHC on WhatsApp." });
     } catch {
-      toast({ tone: "error", title: "Couldn't send your request", desc: "Please try again or message us on WhatsApp." });
+      toast({ tone: "error", title: "Couldn't prepare your request", desc: "Please message us on WhatsApp instead." });
     } finally {
       setSending(false);
     }
@@ -68,13 +78,14 @@ export function EnrollmentForm({ programs = [], events = [], initial = "", compa
 
   if (done)
     return (
-      <div className="tw:rounded-3xl tw:border tw:border-emerald-200 tw:bg-emerald-50 tw:p-8 tw:text-center" role="status">
+      <div className="tw:rounded-3xl tw:border tw:border-emerald-500/30 tw:bg-emerald-500/10 tw:p-8 tw:text-center" role="status">
         <IcCircleCheck className="tw:mx-auto tw:h-12 tw:w-12 tw:text-emerald-600" />
-        <h3 className="tw:mt-4 tw:text-2xl tw:font-semibold">Thank you, {done.name}!</h3>
-        <p className="tw:mt-2 tw:text-ink/70">Your request for <b>{done.what}</b> is in. Our team will call or WhatsApp you within 24 hours to confirm the details.</p>
-        <div className="tw:mt-6 tw:flex tw:flex-wrap tw:justify-center tw:gap-3">
-          <a href={whatsappLink(`Hello AHC, I just sent an enrollment request for ${done.what}.`)} target="_blank" rel="noreferrer" className="tw:inline-flex tw:items-center tw:gap-2 tw:rounded-full tw:bg-whatsapp tw:px-5 tw:py-2.5 tw:text-sm tw:font-semibold tw:text-white"><IcWhatsapp /> Follow up on WhatsApp</a>
-          <Button variant="outline" onClick={() => { setDone(null); setF({ name: "", phone: "", target: "", learnerLevel: "", message: "" }); }}>Send another request</Button>
+        <h3 className="tw:mt-4 tw:text-2xl tw:font-semibold">Almost done, {done.name}!</h3>
+        <p className="tw:mt-2 tw:text-ink/70">Your request for <b>{done.what}</b> is ready. <b>Tap the button below to send it to AHC on WhatsApp</b> — that's how it reaches our team. We'll confirm within 24 hours.</p>
+        <div className="tw:mt-6 tw:flex tw:flex-col tw:items-center tw:gap-3">
+          <a href={done.link} target="_blank" rel="noreferrer" className={btn("whatsapp", "lg")}><IcWhatsapp /> Send request on WhatsApp</a>
+          <p className="tw:text-sm tw:text-ink/60">No WhatsApp? Call us on <a href={SITE.phoneHref} className="tw:font-semibold tw:underline">{SITE.phone}</a>.</p>
+          <Button variant="ghost" size="sm" onClick={() => { setDone(null); setF({ name: "", phone: "", target: "", learnerLevel: "", message: "" }); }}>Start a new request</Button>
         </div>
       </div>
     );
@@ -118,7 +129,7 @@ export function EnrollmentForm({ programs = [], events = [], initial = "", compa
       <Field label="Message (optional)" htmlFor="en-msg" hint="Learner's name, preferred days, questions…">
         <textarea id="en-msg" rows={compact ? 3 : 4} value={f.message} onChange={set("message")} placeholder="Anything we should know?" className={inputClass} />
       </Field>
-      <Button type="submit" size="lg" className="tw:w-full tw:sm:w-auto" disabled={sending}>{sending ? "Sending…" : "Send enrollment request"}</Button>
+      <Button type="submit" size="lg" className="tw:w-full tw:sm:w-auto" disabled={sending}>{sending ? "Preparing…" : "Send enrollment request"}</Button>
       <p className="tw:text-xs tw:text-ink/55">No payment needed now. We'll confirm the schedule and fees with you first. See our <Link to="/about#privacy" className="tw:underline">privacy note</Link>.</p>
     </form>
   );
@@ -144,10 +155,19 @@ export function ContactForm() {
     setSending(true);
     try {
       await api.post("/messages", { ...f, name: f.name.trim(), message: f.message.trim(), status: "unread", createdAt: new Date().toISOString() });
-      setDone(true);
-      toast({ tone: "success", title: "Message sent", desc: "We usually reply within a few hours." });
+      const text = [
+        `Hello Afro Heritage Consultancies, this is ${f.name.trim()}.`,
+        f.subject && `Subject: ${f.subject}`,
+        "",
+        f.message.trim(),
+        "",
+        f.phone && `Phone: ${f.phone}`,
+        f.email && `Email: ${f.email}`,
+      ].filter((x) => x !== false && x !== undefined).join("\n").trim();
+      setDone({ wa: whatsappLink(text) });
+      toast({ tone: "info", title: "One last step", desc: "Send your message to AHC on WhatsApp." });
     } catch {
-      toast({ tone: "error", title: "Couldn't send your message", desc: "Please try WhatsApp instead." });
+      toast({ tone: "error", title: "Couldn't prepare your message", desc: "Please message us on WhatsApp instead." });
     } finally {
       setSending(false);
     }
@@ -155,11 +175,15 @@ export function ContactForm() {
 
   if (done)
     return (
-      <div className="tw:rounded-3xl tw:border tw:border-emerald-200 tw:bg-emerald-50 tw:p-8 tw:text-center" role="status">
+      <div className="tw:rounded-3xl tw:border tw:border-emerald-500/30 tw:bg-emerald-500/10 tw:p-8 tw:text-center" role="status">
         <IcCircleCheck className="tw:mx-auto tw:h-12 tw:w-12 tw:text-emerald-600" />
-        <h3 className="tw:mt-4 tw:text-2xl tw:font-semibold">Message received</h3>
-        <p className="tw:mt-2 tw:text-ink/70">Thanks {f.name.split(" ")[0]} — we'll get back to you shortly.</p>
-        <Button variant="outline" className="tw:mt-6" onClick={() => { setDone(false); setF({ name: "", phone: "", email: "", subject: "", message: "" }); }}>Send another message</Button>
+        <h3 className="tw:mt-4 tw:text-2xl tw:font-semibold">Your message is ready</h3>
+        <p className="tw:mt-2 tw:text-ink/70">Thanks {f.name.split(" ")[0]}! <b>Tap below to send it to us on WhatsApp</b> — we usually reply within a few hours.</p>
+        <div className="tw:mt-6 tw:flex tw:flex-wrap tw:justify-center tw:gap-3">
+          <a href={done.wa} target="_blank" rel="noreferrer" className={btn("whatsapp", "lg")}><IcWhatsapp /> Send on WhatsApp</a>
+        </div>
+        <p className="tw:mt-3 tw:text-sm tw:text-ink/60">No WhatsApp? Call us on <a href={SITE.phoneHref} className="tw:font-semibold tw:underline">{SITE.phone}</a>.</p>
+        <Button variant="ghost" size="sm" className="tw:mt-2" onClick={() => { setDone(false); setF({ name: "", phone: "", email: "", subject: "", message: "" }); }}>Write another message</Button>
       </div>
     );
 
@@ -190,7 +214,7 @@ export function ContactForm() {
       <Field label="Message" htmlFor="ct-message" required error={errors.message}>
         <textarea id="ct-message" rows={5} value={f.message} onChange={set("message")} aria-invalid={!!errors.message} className={inputClass} />
       </Field>
-      <Button type="submit" size="lg" disabled={sending}>{sending ? "Sending…" : "Send message"}</Button>
+      <Button type="submit" size="lg" disabled={sending}>{sending ? "Preparing…" : "Send message"}</Button>
     </form>
   );
 }
