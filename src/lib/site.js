@@ -26,6 +26,17 @@ export const EVENT_TYPES = {
   "photo-walk": "Photo walk",
 };
 
+export const PAPER_TYPES = {
+  exam: "Exam papers",
+  questions: "Topical questions",
+  answers: "Answers & marking schemes",
+  notes: "Revision notes",
+};
+
+export function formatBytes(n) {
+  return n >= 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`;
+}
+
 export const STATUSES = [
   { id: "new", label: "New", tone: "tw:bg-amber-100 tw:text-amber-800 tw:ring-amber-300" },
   { id: "contacted", label: "Contacted", tone: "tw:bg-sky-100 tw:text-sky-800 tw:ring-sky-300" },

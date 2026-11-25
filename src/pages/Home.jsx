@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Carousel } from "bootstrap";
 import {
-  IcArrowRight, IcBookOpen, IcCalendarDays, IcClock, IcCoffee, IcListChecks, IcMountain, IcPhoneCall, IcSend,
+  IcArrowRight, IcBookOpen, IcCalendarDays, IcClock, IcCoffee, IcDownload, IcListChecks, IcMountain, IcPhoneCall, IcSend,
   IcUsers, IcVideo, IcWhatsapp, IcWifi,
 } from "../components/icons";
 import { ButtonLink, Container, Eyebrow, SectionTitle, cx } from "../components/ui";
@@ -208,6 +208,18 @@ export default function Home() {
             {(events.data ?? []).map((e) => <EventCard key={e.id} event={e} />)}
             {events.data?.length === 0 && <p className="tw:text-ink/60">New events are coming soon — follow us on WhatsApp for updates.</p>}
           </div>
+        </Container>
+      </section>
+
+      {/* Past papers */}
+      <section className="tw:bg-sage-100 tw:py-16 tw:transition-colors tw:duration-500">
+        <Container className="tw:flex tw:flex-col tw:gap-6 tw:md:flex-row tw:md:items-center tw:md:justify-between">
+          <div data-reveal="left">
+            <Eyebrow>Free downloads</Eyebrow>
+            <h2 className="tw:mt-3 tw:text-3xl tw:font-semibold tw:leading-tight tw:sm:text-4xl">Past papers & revision</h2>
+            <p className="tw:mt-3 tw:max-w-xl tw:text-ink/70">Practice questions and answers for 8-4-4 Physics and Mathematics, free to download.</p>
+          </div>
+          <ButtonLink to="/past-papers" size="lg" className="tw:shrink-0"><IcDownload /> Browse past papers</ButtonLink>
         </Container>
       </section>
 

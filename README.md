@@ -32,6 +32,7 @@ npm run preview    # serve the production build locally
 | `/programs` | Catalogue filtered by Education / Digital / Community, with search |
 | `/programs/:slug` | Audience, schedule, duration, fee, seats left + enrollment form |
 | `/events` | Upcoming and past events (hikes, photo walks, workshops, intakes) |
+| `/past-papers` | Free downloads of revision papers, with search and filters |
 | `/enroll` | Enrollment request (`?program=<slug>` or `?event=<id>` preselects) |
 | `/contact` | Contact form, WhatsApp, phone, map |
 | `/about` | About AHC + privacy note |
@@ -54,6 +55,15 @@ A static file can't be written to, so:
 **Moving data between computers:** Export db.json on one, then **Import** it on the other. **Discard local changes** returns a browser to the published file.
 
 **The fees, schedules and seat numbers in `db.json` are placeholders.** Replace them with AHC's real details. The coworking space details and the "Raise Smart, Raise Safe" workshop come from AHC's flyers.
+
+## Past papers
+
+The documents are in `public/papers/<subject>/<form>/` and the catalogue is `public/papers.json` (it is separate from `db.json`, so admin export/import never touches it). To add one:
+
+1. Put the file in the right folder, with a lowercase-and-hyphens name. Keep it small, since learners download on mobile data.
+2. Add an entry to `public/papers.json` with a new `id`: `title`, `subject`, `level` (`Form 1` … `Form 4` or `Form 1–4`), `type` (`exam`, `questions`, `answers` or `notes`), `credit` (author or school, or `""`), `file`, `format`, `bytes` and `pages` (PDF page count, otherwise `null`). New subjects appear in the filter automatically.
+
+Only add material AHC wrote or has permission to share. Leave out textbooks, KNEC papers, and anything with a copyright notice, publisher, website, school or author's name unless the owner has agreed. Papers waiting for permission can be kept in `held-papers/`, which Git ignores.
 
 ## Admin
 

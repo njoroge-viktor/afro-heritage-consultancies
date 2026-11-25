@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import Programs from "./pages/Programs";
 import ProgramDetail from "./pages/ProgramDetail";
 import Events from "./pages/Events";
+import Papers from "./pages/Papers";
 import Enroll from "./pages/Enroll";
 import Admin from "./pages/Admin";
 import { About, Contact, NotFound } from "./pages/InfoPages";
@@ -27,6 +28,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="programs" element={<Programs />} />
             <Route path="programs/:slug" element={<ProgramDetail />} />
             <Route path="events" element={<Events />} />
+            <Route path="past-papers" element={<Papers />} />
             <Route path="enroll" element={<Enroll />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />

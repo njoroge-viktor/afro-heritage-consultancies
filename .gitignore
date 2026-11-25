@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Papers kept back until their owners give permission: never publish
+held-papers

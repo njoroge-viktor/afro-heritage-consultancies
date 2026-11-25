@@ -9,6 +9,7 @@ const links = [
   { to: "/", label: "Home", end: true },
   { to: "/programs", label: "Programs" },
   { to: "/events", label: "Events" },
+  { to: "/past-papers", label: "Past papers" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
@@ -41,7 +42,7 @@ function Navbar() {
         <Link to="/" aria-label={`${SITE.name} home`} className="tw:shrink-0 tw:transition tw:hover:opacity-80">
           <Logo className={cx("tw:w-auto tw:transition-all tw:duration-300", scrolled ? "tw:h-10" : "tw:h-12 tw:sm:h-14")} />
         </Link>
-        <nav aria-label="Main" className="tw:hidden tw:items-center tw:gap-6 tw:md:flex">
+        <nav aria-label="Main" className="tw:hidden tw:items-center tw:gap-6 tw:lg:flex">
           {links.map((l) => (
             <NavLink key={l.to} to={l.to} end={l.end}
               className={({ isActive }) => cx("link-slide tw:py-1 tw:text-sm tw:font-medium tw:transition", isActive ? "active tw:text-rust" : "tw:text-ink/70 tw:hover:text-ink")}>
@@ -53,7 +54,7 @@ function Navbar() {
           <ThemeToggle />
           <Link to="/enroll" className={btn("primary", "md", "tw:max-md:hidden")}>Enrol now <IcArrowRight className="nudge" /></Link>
           <button type="button" data-bs-toggle="offcanvas" data-bs-target="#mobile-nav" aria-controls="mobile-nav" aria-label="Open menu"
-            className="tw:flex tw:h-10 tw:w-10 tw:items-center tw:justify-center tw:rounded-full tw:transition tw:hover:bg-ink/5 tw:md:hidden">
+            className="tw:flex tw:h-10 tw:w-10 tw:items-center tw:justify-center tw:rounded-full tw:transition tw:hover:bg-ink/5 tw:lg:hidden">
             <IcMenu className="tw:h-6 tw:w-6" />
           </button>
         </div>
@@ -102,7 +103,7 @@ function Footer() {
         <div data-reveal>
           <h2 className="tw:font-sans tw:text-sm tw:font-semibold tw:uppercase tw:tracking-wider tw:text-leaf">Explore</h2>
           <ul className="tw:mt-4 tw:space-y-2 tw:text-sm tw:text-paper/80">
-            {[["Programs", "/programs"], ["Events", "/events"], ["Enrol", "/enroll"], ["About us", "/about"], ["Contact", "/contact"]].map(([l, to]) => (
+            {[["Programs", "/programs"], ["Events", "/events"], ["Past papers", "/past-papers"], ["Enrol", "/enroll"], ["About us", "/about"], ["Contact", "/contact"]].map(([l, to]) => (
               <li key={to}><Link to={to} className="slide-right tw:hover:text-leaf">{l}</Link></li>
             ))}
           </ul>
