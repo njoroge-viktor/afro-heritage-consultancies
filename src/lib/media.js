@@ -21,13 +21,12 @@ const video = manifest.find((m) => m.file.endsWith(".mp4"));
 export const TESTIMONIAL_VIDEO = { src: BASE + video.file, poster: BASE + video.poster, width: video.width, height: video.height, label: video.alt };
 
 /**
- * Photos the client still has to confirm (who is shown, caption, consent).
- * They appear only on the local dev server, marked "Awaiting client confirmation",
- * and are left out of production builds until removed from this list.
- * TODO(client): confirm the graduate's identity and caption (milestone-01) and the
- * partner's name and consent (partners-02).
+ * Photos still awaiting client confirmation (who is shown, caption, consent).
+ * Any listed here appear only on the local dev server, marked "Awaiting client
+ * confirmation", and are left out of production builds. Consent for all current
+ * photos was confirmed at collection, so the list is empty.
  */
-export const UNCONFIRMED = new Set(["milestone-01-graduation-tangaza", "partners-02-director-with-partner-italy"]);
+export const UNCONFIRMED = new Set([]);
 export const SHOW_UNCONFIRMED = import.meta.env.DEV;
 
 /** Program card / detail photo for each program slug (programs without one use a coloured panel). */

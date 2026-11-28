@@ -61,8 +61,8 @@ A static file can't be written to, so:
 The client's photos and testimonial video are in `public/images/site/`, with `images-manifest.json` (size, placement and alt text for each file) as the source of truth. `src/lib/media.js` reads the manifest; `src/components/media.jsx` has `<Photo name="…">` (WebP with JPEG fallback, width/height and alt from the manifest, lazy unless `priority`) and `<TestimonialVideo>`.
 
 - The photos are already sized, colour-corrected and **watermarked in the bottom-right corner**. Don't re-crop, re-colour or re-compress them, and keep overlays and text out of the bottom-right ~20%. When a photo is shown in a different shape, use the `KEEP_WATERMARK` positions in `media.js` so the corner stays in frame.
-- Photos listed in `UNCONFIRMED` (in `media.js`) show only on the dev server, with an "Awaiting client confirmation" badge. Remove a photo from that list once the client confirms who is in it and the caption.
-- Still needed from the client (search for `TODO(client)`): the Director's name and bio, the partner's and volunteer's names and consent, the graduate's identity, and impact figures for the book-donation section (`IMPACT`).
+- Photos listed in `UNCONFIRMED` (in `media.js`) show only on the dev server, with an "Awaiting client confirmation" badge. Add new photos there until the client confirms consent and captions.
+- Still needed from the client (search for `TODO(client)`): the Director's name and bio, and impact figures for the book-donation section (`IMPACT`). Names for the partner, volunteer and graduate are only needed if captions are added.
 
 ## Past papers
 

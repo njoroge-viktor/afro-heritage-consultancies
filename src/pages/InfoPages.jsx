@@ -15,7 +15,7 @@ const MOSAIC = [
   { name: "intl-03-learners-helping-each-other" },
   { name: "intl-04-mixed-class-group-work" },
   { name: "intl-05-academic-procession-scholars" },
-  { name: "partners-02-director-with-partner-italy", portrait: true },
+  { name: "partners-02-director-with-partner-italy", portrait: true, position: "50% 90%" },
 ].filter((t) => canShow(t.name));
 
 function GlobalCommunity() {
@@ -27,10 +27,10 @@ function GlobalCommunity() {
           {MOSAIC.map((t) => (
             <figure key={t.name} data-reveal="zoom" className={cx("tw:relative tw:overflow-hidden tw:rounded-2xl tw:bg-sage-200", t.big && "tw:sm:col-span-2 tw:sm:row-span-2", t.portrait && "tw:sm:row-span-2")}>
               <PendingBadge name={t.name} />
-              <Photo name={t.name} position={t.position} className="tw:h-full" imgClassName={cx("tw:w-full tw:object-cover", t.portrait ? "tw:aspect-[3/4] tw:h-full" : t.big ? "tw:aspect-[3/2] tw:h-full" : "tw:aspect-[3/2]")} />
+              <Photo name={t.name} position={t.position ?? KEEP_WATERMARK.narrower} className="tw:h-full" imgClassName={cx("tw:h-full tw:w-full tw:object-cover", t.portrait ? "tw:aspect-[3/4]" : "tw:aspect-[3/2]")} />
             </figure>
           ))}
-          <div data-reveal="zoom" className="tw:flex tw:flex-col tw:justify-center tw:rounded-2xl tw:bg-night tw:p-7 tw:text-paper">
+          <div data-reveal="zoom" className={cx("tw:flex tw:flex-col tw:justify-center tw:rounded-2xl tw:bg-night tw:p-7 tw:text-paper", MOSAIC.some((t) => t.portrait) && "tw:sm:row-span-2 tw:lg:col-span-2 tw:lg:row-span-1")}>
             <h3 className="tw:text-2xl tw:font-semibold tw:leading-snug">Want to visit, volunteer or partner with us?</h3>
             <p className="tw:mt-2 tw:text-sm tw:text-paper/75">We'd love to hear from you.</p>
             <ButtonLink to="/contact" variant="sage" className="tw:mt-5 tw:self-start">Get in touch</ButtonLink>
