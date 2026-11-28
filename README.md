@@ -56,6 +56,14 @@ A static file can't be written to, so:
 
 **The fees, schedules and seat numbers in `db.json` are placeholders.** Replace them with AHC's real details. The coworking space details and the "Raise Smart, Raise Safe" workshop come from AHC's flyers.
 
+## Photos and video
+
+The client's photos and testimonial video are in `public/images/site/`, with `images-manifest.json` (size, placement and alt text for each file) as the source of truth. `src/lib/media.js` reads the manifest; `src/components/media.jsx` has `<Photo name="…">` (WebP with JPEG fallback, width/height and alt from the manifest, lazy unless `priority`) and `<TestimonialVideo>`.
+
+- The photos are already sized, colour-corrected and **watermarked in the bottom-right corner**. Don't re-crop, re-colour or re-compress them, and keep overlays and text out of the bottom-right ~20%. When a photo is shown in a different shape, use the `KEEP_WATERMARK` positions in `media.js` so the corner stays in frame.
+- Photos listed in `UNCONFIRMED` (in `media.js`) show only on the dev server, with an "Awaiting client confirmation" badge. Remove a photo from that list once the client confirms who is in it and the caption.
+- Still needed from the client (search for `TODO(client)`): the Director's name and bio, the partner's and volunteer's names and consent, the graduate's identity, and impact figures for the book-donation section (`IMPACT`).
+
 ## Past papers
 
 The documents are in `public/papers/<subject>/<form>/` and the catalogue is `public/papers.json` (it is separate from `db.json`, so admin export/import never touches it). To add one:

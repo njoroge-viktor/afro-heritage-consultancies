@@ -198,6 +198,19 @@ a:hover .icon-pop { transform: rotate(-8deg) scale(1.12); }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 .marquee-pause:hover .tw\:animate-marquee { animation-play-state: paused; }
 
+/* ---------- Home hero ---------- */
+/* Dark left-to-right shade behind the hero text. The mask keeps the bottom-right
+   20% x 20% of the photo (where the AHC watermark sits) completely uncovered. */
+.hero-shade {
+  background: linear-gradient(90deg, rgb(0 0 0 / 0.75) 0%, rgb(0 0 0 / 0.68) 45%, rgb(0 0 0 / 0.35) 64%, transparent 80%);
+  -webkit-mask-image: linear-gradient(90deg, #000 80%, transparent 80%), linear-gradient(180deg, #000 80%, transparent 80%);
+  mask-image: linear-gradient(90deg, #000 80%, transparent 80%), linear-gradient(180deg, #000 80%, transparent 80%);
+  mask-composite: add;
+}
+@media (max-width: 1023px) {
+  .hero-shade { background: linear-gradient(90deg, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0.66) 70%, rgb(0 0 0 / 0.5) 100%); }
+}
+
 /* ---------- Bootstrap component touches ---------- */
 .carousel-indicators [data-bs-target] { width: 28px; height: 5px; border-radius: 999px; }
 /* Slides are always dark, so keep Bootstrap's controls white in both themes */

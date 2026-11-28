@@ -1,12 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Carousel } from "bootstrap";
 import {
-  IcArrowRight, IcBookOpen, IcCalendarDays, IcClock, IcCoffee, IcDownload, IcListChecks, IcMountain, IcPhoneCall, IcSend,
+  IcArrowRight, IcBookOpen, IcCalendarDays, IcChevronLeft, IcChevronRight, IcClock, IcCoffee, IcDownload, IcListChecks, IcMountain, IcPause, IcPhoneCall, IcPlay, IcSend,
   IcUsers, IcVideo, IcWhatsapp, IcWifi,
 } from "../components/icons";
 import { ButtonLink, Container, Eyebrow, SectionTitle, cx } from "../components/ui";
 import { EventCard, ProgramCard } from "../components/cards";
+import { Photo, TestimonialVideo } from "../components/media";
 import { seatsLeft, useResource } from "../lib/api";
 import { CATEGORIES, SITE, todayISO, whatsappLink } from "../lib/site";
 
@@ -24,6 +25,106 @@ const faqs = [
   ["Do you offer online classes?", "Spoken English coaching is available online for international learners, and some workshops — like Raise Smart, Raise Safe — are delivered online."],
   ["Can adults join, or is it only for school learners?", "Adults are very welcome: spoken English coaching, digital skills courses, hikes, photo walks and the coworking space are all open to adults."],
 ];
+
+const HERO_SLIDES = [
+  { name: "hero-01-classroom-ai-lesson", position: "center 30%" },
+  { name: "hero-02-youth-media-session", position: "center 40%" },
+  { name: "hero-03-smiling-student", position: "70% center" },
+];
+
+/**
+ * Full-bleed photo hero (Bootstrap carousel, fade). Slide 1 is the LCP image; slides 2–3
+ * load lazily, each warmed up shortly before it is shown. Auto-advances every 6 s unless
+ * the visitor prefers reduced motion, pauses it, hovers it or focuses inside it.
+ * Overlays stay in the left 80% so the watermark (bottom-right) is never covered.
+ */
+function Hero() {
+  const ref = useRef(null);
+  const [reduce] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const [playing, setPlaying] = useState(!reduce);
+  const [active, setActive] = useState(0);
+  const hold = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    const c = Carousel.getOrCreateInstance(el, { interval: false, ride: false, pause: false, touch: true, keyboard: true });
+    const warm = (i) => el.querySelectorAll(".carousel-item img")[i]?.setAttribute("loading", "eager");
+    const onSlid = (e) => {
+      setActive(e.to);
+      warm((e.to + 1) % HERO_SLIDES.length);
+    };
+    el.addEventListener("slid.bs.carousel", onSlid);
+    const t = setTimeout(() => warm(1), 3500);
+    return () => {
+      clearTimeout(t);
+      el.removeEventListener("slid.bs.carousel", onSlid);
+      c.dispose();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!playing) return;
+    const id = setInterval(() => {
+      if (!hold.current && !document.hidden) Carousel.getInstance(ref.current)?.next();
+    }, 6000);
+    return () => clearInterval(id);
+  }, [playing]);
+
+  const go = (dir) => Carousel.getInstance(ref.current)?.[dir]();
+  const ctl = "tw:flex tw:h-10 tw:w-10 tw:items-center tw:justify-center tw:rounded-full tw:bg-white/15 tw:text-white tw:backdrop-blur tw:transition tw:hover:bg-white/30";
+
+  return (
+    <section
+      aria-roledescription="carousel" aria-label="Afro Heritage Consultancies in pictures"
+      onMouseEnter={() => (hold.current = true)} onMouseLeave={() => (hold.current = false)}
+      onFocus={() => (hold.current = true)} onBlur={() => (hold.current = false)}
+      className="tw:relative tw:isolate tw:h-[78svh] tw:max-h-[860px] tw:min-h-[520px] tw:overflow-hidden tw:bg-night tw:text-white"
+    >
+      <div ref={ref} id="home-hero" className="carousel slide carousel-fade tw:absolute tw:inset-0 tw:z-0">
+        <div className="carousel-inner tw:h-full">
+          {HERO_SLIDES.map((s, i) => (
+            <div key={s.name} className={cx("carousel-item tw:h-full", i === 0 && "active")} aria-roledescription="slide" aria-label={`${i + 1} of ${HERO_SLIDES.length}`}>
+              <Photo name={s.name} priority={i === 0} position={s.position} className="tw:h-full" imgClassName="tw:h-full tw:w-full tw:object-cover" />
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Left-to-right gradient for text contrast. Masked so the bottom-right 20% × 20% (the watermark) stays clear. */}
+      <div aria-hidden className="hero-shade tw:pointer-events-none tw:absolute tw:inset-0 tw:z-10" />
+
+      <Container className="tw:relative tw:z-10 tw:flex tw:h-full tw:flex-col tw:justify-center tw:pb-16">
+        <div className="enter-left tw:max-w-[78%] tw:sm:max-w-xl tw:[text-shadow:0_1px_12px_rgb(0_0_0/0.45)]">
+          <p className="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-white">Ngong & Marsabit, Kenya · Community education</p>
+          <h1 className="tw:mt-4 tw:text-4xl tw:font-semibold tw:leading-[1.05] tw:sm:text-6xl tw:lg:text-7xl">
+            Touching Minds,<br /><span className="tw:italic tw:text-leaf">Educating Hearts</span>
+          </h1>
+          <p className="tw:mt-5 tw:text-base tw:leading-relaxed tw:text-white tw:sm:text-lg">
+            Quality tuition, practical digital skills and community programs that help learners and families <b>learn, earn and connect</b>.
+          </p>
+          <div className="tw:mt-7 tw:flex tw:flex-wrap tw:gap-3 tw:[text-shadow:none]">
+            <ButtonLink to="/enroll" size="lg">Enrol now <IcArrowRight className="nudge" /></ButtonLink>
+            <ButtonLink to="/programs" size="lg" variant="outline" className="tw:border-white/60 tw:bg-black/20 tw:text-white tw:hover:border-leaf tw:hover:text-leaf">Browse programs</ButtonLink>
+          </div>
+        </div>
+      </Container>
+
+      {/* Slide controls, bottom-left (the bottom-right holds the photo watermark). */}
+      <Container className="tw:absolute tw:inset-x-0 tw:bottom-5 tw:z-10 tw:flex tw:items-center tw:gap-2">
+        <button type="button" onClick={() => go("prev")} aria-controls="home-hero" aria-label="Previous slide" className={ctl}><IcChevronLeft /></button>
+        <button type="button" onClick={() => setPlaying((p) => !p)} aria-label={playing ? "Pause slideshow" : "Play slideshow"} className={ctl}>{playing ? <IcPause /> : <IcPlay />}</button>
+        <button type="button" onClick={() => go("next")} aria-controls="home-hero" aria-label="Next slide" className={ctl}><IcChevronRight /></button>
+        <div className="tw:ml-1 tw:flex">
+          {HERO_SLIDES.map((s, i) => (
+            <button key={s.name} type="button" onClick={() => Carousel.getInstance(ref.current)?.to(i)} aria-label={`Show slide ${i + 1}`} aria-current={active === i ? "true" : undefined}
+              className="tw:group tw:flex tw:h-10 tw:min-w-10 tw:items-center tw:justify-center tw:px-1">
+              <span className={cx("tw:h-1.5 tw:rounded-full tw:transition-all", active === i ? "tw:w-8 tw:bg-white" : "tw:w-4 tw:bg-white/60 tw:group-hover:bg-white/90")} />
+            </button>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+}
 
 /* Bootstrap carousel: "Life at AHC" */
 function Highlights() {
@@ -86,41 +187,7 @@ export default function Home() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="tw:relative tw:overflow-hidden tw:bg-sage-300 tw:transition-colors tw:duration-500">
-        <div className="dots tw:pointer-events-none tw:absolute tw:-right-10 tw:top-10 tw:h-48 tw:w-72 tw:opacity-60" aria-hidden />
-        <div className="tw:pointer-events-none tw:absolute tw:-bottom-32 tw:-left-24 tw:h-80 tw:w-80 tw:rounded-full tw:bg-rust/90" aria-hidden />
-        <Container className="tw:relative tw:grid tw:items-center tw:gap-10 tw:py-16 tw:sm:py-20 tw:lg:grid-cols-[1.15fr_1fr] tw:lg:py-24">
-          <div className="enter-left">
-            <Eyebrow className="tw:text-rust-dark">Ngong, Kenya · Community education</Eyebrow>
-            <h1 className="tw:mt-4 tw:text-5xl tw:font-semibold tw:leading-[1.02] tw:sm:text-6xl tw:lg:text-7xl">
-              Touching Minds,<br /><span className="tw:italic tw:text-rust">Educating Hearts</span>
-            </h1>
-            <p className="tw:mt-6 tw:max-w-xl tw:text-lg tw:leading-relaxed tw:text-ink/80">
-              Quality tuition, practical digital skills and community programs that help learners and families across Ngong <b>learn, earn and connect</b>.
-            </p>
-            <div className="tw:mt-8 tw:flex tw:flex-wrap tw:gap-3">
-              <ButtonLink to="/programs" size="lg" variant="dark">Browse programs <IcArrowRight className="nudge" /></ButtonLink>
-              <ButtonLink to="/enroll" size="lg">Enrol in 2 minutes</ButtonLink>
-            </div>
-            <p className="tw:mt-6 tw:flex tw:items-center tw:gap-2 tw:text-sm tw:text-ink/70">
-              <IcWhatsapp className="tw:text-lg tw:text-green-700 tw:dark:text-whatsapp" /> Questions? <a href={whatsappLink()} target="_blank" rel="noreferrer" className="link-slide tw:font-semibold">WhatsApp {SITE.phone}</a>
-            </p>
-          </div>
-          <div className="enter-right tw:relative tw:mx-auto tw:w-full tw:max-w-md tw:lg:max-w-none">
-            <div className="tw:absolute tw:inset-4 tw:rounded-full tw:bg-cream/80 tw:blur-2xl" aria-hidden />
-            <img src="/images/eagle.png" alt="" width="600" height="395" className="tw:relative tw:w-full tw:animate-float tw:drop-shadow-xl" />
-            <div className="tw:relative tw:mt-6 tw:grid tw:grid-cols-3 tw:gap-3">
-              {[["3", "program areas"], [String(programs.data?.length ?? "—"), "programs"], ["24 h", "reply time"]].map(([v, l]) => (
-                <div key={l} className="tw:rounded-2xl tw:bg-cream/80 tw:p-3 tw:text-center tw:shadow-sm tw:backdrop-blur tw:transition tw:duration-300 tw:hover:-translate-y-1 tw:hover:shadow-md">
-                  <p className="tw:font-display tw:text-2xl tw:font-semibold">{v}</p>
-                  <p className="tw:text-xs tw:text-ink/70">{l}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Container>
-      </section>
+      <Hero />
 
       {/* Sliding program ticker */}
       <div className="marquee-pause tw:overflow-hidden tw:bg-night tw:py-4 tw:text-paper" aria-label="Programs we offer">
@@ -150,6 +217,29 @@ export default function Home() {
               );
             })}
           </div>
+        </Container>
+      </section>
+
+      {/* Director + international community */}
+      <section className="tw:pb-20">
+        <Container className="tw:grid tw:gap-6 tw:lg:grid-cols-2">
+          <Link to="/about#director" data-reveal="left" className="lift tw:group tw:flex tw:flex-col tw:items-center tw:gap-6 tw:rounded-3xl tw:bg-sage-100 tw:p-7 tw:text-center tw:sm:flex-row tw:sm:text-left">
+            <Photo name="director-01-official-headshot" position="center 25%" className="tw:shrink-0" imgClassName="tw:h-40 tw:w-40 tw:rounded-full tw:object-cover tw:ring-4 tw:ring-surface tw:sm:h-44 tw:sm:w-44" />
+            <div>
+              <Eyebrow>Meet the Director</Eyebrow>
+              <h2 className="tw:mt-2 tw:text-2xl tw:font-semibold tw:leading-snug tw:sm:text-3xl">Leading AHC in Ngong and Marsabit</h2>
+              <p className="tw:mt-2 tw:text-sm tw:text-ink/70">Tuition, digital skills and community programmes, led by our Director.</p>
+              <p className="tw:mt-4 tw:inline-flex tw:items-center tw:gap-2 tw:text-sm tw:font-semibold tw:text-rust">Read more <IcArrowRight className="nudge" /></p>
+            </div>
+          </Link>
+          <Link to="/about#community" data-reveal="right" className="lift tw:group tw:overflow-hidden tw:rounded-3xl tw:bg-surface tw:ring-1 tw:ring-ink/10">
+            <Photo name="intl-02-director-with-partner-laughing" position="50% 80%" imgClassName="tw:aspect-[16/9] tw:w-full tw:object-cover" />
+            <div className="tw:p-6">
+              <Eyebrow>A global community</Eyebrow>
+              <h2 className="tw:mt-2 tw:text-2xl tw:font-semibold tw:leading-snug">Partners and friends from around the world</h2>
+              <p className="tw:mt-3 tw:inline-flex tw:items-center tw:gap-2 tw:text-sm tw:font-semibold tw:text-rust">See our community <IcArrowRight className="nudge" /></p>
+            </div>
+          </Link>
         </Container>
       </section>
 
@@ -194,6 +284,22 @@ export default function Home() {
             ))}
           </ol>
           <div data-reveal className="tw:mt-10 tw:text-center"><ButtonLink to="/enroll" size="lg">Start your enrollment request <IcArrowRight className="nudge" /></ButtonLink></div>
+        </Container>
+      </section>
+
+      {/* Testimonial video */}
+      <section className="tw:py-20">
+        <Container className="tw:grid tw:items-center tw:gap-10 tw:md:grid-cols-[minmax(0,360px)_1fr] tw:lg:gap-16">
+          <div data-reveal="left"><TestimonialVideo /></div>
+          <div data-reveal="right">
+            <Eyebrow>In their words</Eyebrow>
+            <h2 className="tw:mt-3 tw:text-3xl tw:font-semibold tw:leading-tight tw:sm:text-4xl">What learners say</h2>
+            <p className="tw:mt-4 tw:max-w-lg tw:text-lg tw:leading-relaxed tw:text-ink/75">Grace, a Form 3 student, talks about how tuition at Afro Heritage Consultancies helped her.</p>
+            <div className="tw:mt-8 tw:flex tw:flex-wrap tw:gap-3">
+              <ButtonLink to="/programs?category=education">See tuition programs <IcArrowRight className="nudge" /></ButtonLink>
+              <ButtonLink to="/enroll" variant="outline">Enrol now</ButtonLink>
+            </div>
+          </div>
         </Container>
       </section>
 

@@ -22,6 +22,15 @@
         } catch (e) {}
       })();
     </script>
+    <script>
+      // Home page only: start downloading the hero photo (the LCP image) before the app renders.
+      if (location.pathname === "/") {
+        var l = document.createElement("link");
+        l.rel = "preload"; l.as = "image"; l.type = "image/webp"; l.fetchPriority = "high";
+        l.href = "/images/site/01-hero/hero-01-classroom-ai-lesson.webp";
+        document.head.appendChild(l);
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />

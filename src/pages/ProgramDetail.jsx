@@ -7,6 +7,8 @@ import { EnrollmentForm } from "../components/forms";
 import { seatsLeft, useResource } from "../lib/api";
 import { CATEGORIES, formatFee, todayISO, whatsappLink } from "../lib/site";
 import NotFound from "./NotFound";
+import { Photo, TestimonialVideo } from "../components/media";
+import { PROGRAM_PHOTOS, TESTIMONIAL_PROGRAMS } from "../lib/media";
 
 export default function ProgramDetail() {
   const { slug } = useParams();
@@ -21,6 +23,7 @@ export default function ProgramDetail() {
 
   const cat = CATEGORIES[p.category];
   const Icon = categoryIcon[p.category];
+  const photo = PROGRAM_PHOTOS[p.slug];
   const seats = seatsLeft(p, enrollments.data ?? []);
   const related = (events.data ?? []).filter((e) => e.programId === p.id && e.date >= todayISO());
   const facts = [
@@ -35,7 +38,8 @@ export default function ProgramDetail() {
   return (
     <>
       <section className={cx("tw:py-12 tw:sm:py-16", p.category === "education" ? "tw:bg-sage-300" : p.category === "digital" ? "tw:bg-rust tw:text-white" : "tw:bg-night tw:text-paper")}>
-        <Container>
+        <Container className={cx(photo && "tw:grid tw:items-center tw:gap-10 tw:lg:grid-cols-[1.2fr_1fr]")}>
+          <div>
           <Link to={`/programs?category=${p.category}`} className="tw:inline-flex tw:items-center tw:gap-2 tw:text-sm tw:font-semibold tw:opacity-80 tw:hover:opacity-100"><IcArrowLeft /> {cat.label} programs</Link>
           <div className="tw:mt-6 tw:flex tw:items-start tw:gap-5">
             <span className="tw:hidden tw:h-16 tw:w-16 tw:shrink-0 tw:items-center tw:justify-center tw:rounded-2xl tw:bg-surface/20 tw:text-3xl tw:sm:flex"><Icon /></span>
@@ -48,6 +52,8 @@ export default function ProgramDetail() {
               </div>
             </div>
           </div>
+          </div>
+          {photo && <Photo name={photo} priority className="enter-right" imgClassName="tw:h-auto tw:w-full tw:rounded-2xl tw:shadow-xl" />}
         </Container>
       </section>
 
@@ -73,6 +79,15 @@ export default function ProgramDetail() {
               <h2 className="tw:mt-10 tw:text-2xl tw:font-semibold">Levels</h2>
               <div className="tw:mt-3 tw:flex tw:flex-wrap tw:gap-2">{p.levels.map((l) => <Badge key={l} className="tw:bg-sage-100 tw:px-3 tw:py-1 tw:text-sm tw:text-ink tw:ring-1 tw:ring-sage-300">{l}</Badge>)}</div>
             </>
+          )}
+          {TESTIMONIAL_PROGRAMS.has(p.slug) && (
+            <div className="tw:mt-12 tw:grid tw:items-center tw:gap-8 tw:rounded-3xl tw:bg-sage-100 tw:p-6 tw:sm:grid-cols-[minmax(0,260px)_1fr] tw:sm:p-8">
+              <TestimonialVideo />
+              <div>
+                <h2 className="tw:text-2xl tw:font-semibold">Hear from a learner</h2>
+                <p className="tw:mt-3 tw:text-ink/75">Grace, a Form 3 student, talks about how tuition at Afro Heritage Consultancies helped her.</p>
+              </div>
+            </div>
           )}
           {related.length > 0 && (
             <>

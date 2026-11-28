@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { IcSearch, IcX } from "../components/icons";
 import { Container, ErrorState, Loading, SectionTitle, cx, inputClass } from "../components/ui";
 import { ProgramCard } from "../components/cards";
+import { CommunityOutreach } from "../components/community";
 import { seatsLeft, useResource } from "../lib/api";
 import { CATEGORIES } from "../lib/site";
 
@@ -64,6 +65,8 @@ export default function Programs() {
           <button type="button" onClick={() => setParams({}, { replace: true })} className="tw:mt-3 tw:inline-flex tw:items-center tw:gap-1 tw:text-sm tw:font-semibold tw:text-rust"><IcX /> Clear filters</button>
         </div>
       )}
+
+      {category === "community" && <CommunityOutreach />}
     </Container>
   );
 }

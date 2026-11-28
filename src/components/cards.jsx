@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { IcArrowRight, IcBookOpen, IcCalendarDays, IcClock, IcMapPin, IcMountain, IcUsers, IcVideo, IcWifi } from "./icons";
 import { Badge, cx } from "./ui";
+import { Photo } from "./media";
+import { KEEP_WATERMARK, PROGRAM_PHOTOS } from "../lib/media";
 import { CATEGORIES, EVENT_TYPES, formatDate, formatFee, formatTime } from "../lib/site";
 
 export const categoryIcon = { education: IcBookOpen, digital: IcVideo, community: IcMountain };
@@ -15,12 +17,17 @@ export function SeatsBadge({ seats, capacity }) {
 export function ProgramCard({ program, seats }) {
   const cat = CATEGORIES[program.category];
   const Icon = program.slug === "coworking-space" ? IcWifi : categoryIcon[program.category];
+  const photo = PROGRAM_PHOTOS[program.slug];
   return (
     <article data-reveal className="lift tw:group tw:relative tw:flex tw:h-full tw:flex-col tw:overflow-hidden tw:rounded-3xl tw:border tw:border-ink/10 tw:bg-surface tw:hover:border-rust/40">
-      <div className={cx("tw:relative tw:flex tw:items-center tw:justify-between tw:overflow-hidden tw:px-6 tw:py-5", cat?.color)}>
-        <span className="tw:absolute tw:inset-y-0 tw:-left-1/3 tw:w-1/3 tw:-skew-x-12 tw:bg-white/20 tw:transition-all tw:duration-700 tw:group-hover:left-[120%]" aria-hidden />
-        <span className="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-wider">{cat?.label}</span>
-        <Icon className="icon-pop tw:h-6 tw:w-6" />
+      {/* 4:3 photo, or a coloured panel of the same size for programs without one. */}
+      <div className={cx("tw:relative tw:overflow-hidden", photo ? "tw:aspect-[4/3]" : cx("tw:aspect-[5/2] tw:sm:aspect-[4/3]", cat?.color))}>
+        {photo ? (
+          <Photo name={photo} position={KEEP_WATERMARK.narrower} className="tw:h-full" imgClassName="tw:h-full tw:w-full tw:object-cover" />
+        ) : (
+          <Icon className="icon-pop tw:absolute tw:inset-0 tw:m-auto tw:h-20 tw:w-20 tw:opacity-30" />
+        )}
+        <span className={cx("tw:absolute tw:left-4 tw:top-4 tw:rounded-full tw:px-3 tw:py-1 tw:text-xs tw:font-semibold tw:uppercase tw:tracking-wider", photo ? "tw:bg-night/80 tw:text-paper tw:backdrop-blur" : "tw:bg-white/25")}>{cat?.label}</span>
       </div>
       <div className="tw:flex tw:flex-1 tw:flex-col tw:p-6">
         <h3 className="tw:text-xl tw:font-semibold tw:leading-snug tw:transition tw:group-hover:text-rust">

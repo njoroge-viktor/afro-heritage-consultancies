@@ -1,0 +1,218 @@
+[
+  {
+    "file": "01-hero/hero-01-classroom-ai-lesson.webp",
+    "fallback": "01-hero/hero-01-classroom-ai-lesson.jpg",
+    "width": 1920,
+    "height": 1280,
+    "placement": "Home \u203a Hero slide 1 (PRIMARY, LCP image)",
+    "alt": "A tutor writes about the effects of AI on a whiteboard while students follow the lesson",
+    "layout": "Full-bleed hero, 100vw \u00d7 70\u201385vh. object-fit: cover; object-position: center 30%. Headline + tagline + 'Enrol now' CTA on the LEFT over a left-to-right dark gradient (rgba(0,0,0,.55)\u2192transparent). loading=eager, fetchpriority=high."
+  },
+  {
+    "file": "01-hero/hero-02-youth-media-session.webp",
+    "fallback": "01-hero/hero-02-youth-media-session.jpg",
+    "width": 1920,
+    "height": 1280,
+    "placement": "Home \u203a Hero slide 2",
+    "alt": "Young people take part in a digital media session with cameras and lights",
+    "layout": "Same hero container. object-position: center 40%. Optional auto-advance every 6 s; respect prefers-reduced-motion (no auto-advance). loading=lazy."
+  },
+  {
+    "file": "01-hero/hero-03-smiling-student.webp",
+    "fallback": "01-hero/hero-03-smiling-student.jpg",
+    "width": 1920,
+    "height": 1280,
+    "placement": "Home \u203a Hero slide 3 / mobile hero fallback",
+    "alt": "A smiling student at her desk during a tuition session",
+    "layout": "object-position: 70% center so the student stays visible on narrow screens; text on the left. Good single-image hero on mobile."
+  },
+  {
+    "file": "02-director-portraits/director-01-official-headshot.webp",
+    "fallback": "02-director-portraits/director-01-official-headshot.jpg",
+    "width": 1400,
+    "height": 1157,
+    "placement": "About \u203a Meet the Director (bio card)",
+    "alt": "Portrait of the Director of Afro Heritage Consultancies",
+    "layout": "Circle or rounded-square avatar, 240\u2013320px. object-fit: cover; object-position: center 25%. Caption: [DIRECTOR NAME \u2014 get from client], Director."
+  },
+  {
+    "file": "02-director-portraits/director-02-smiling-suit-walking.webp",
+    "fallback": "02-director-portraits/director-02-smiling-suit-walking.jpg",
+    "width": 1161,
+    "height": 1400,
+    "placement": "About \u203a Director story section (beside bio text)",
+    "alt": "The Director smiling as he walks across a school campus",
+    "layout": "Portrait orientation; 2-column layout (image left 40%, text right) on desktop, stacked on mobile. Rounded corners 16px."
+  },
+  {
+    "file": "02-director-portraits/director-03-arms-crossed-portrait.webp",
+    "fallback": "02-director-portraits/director-03-arms-crossed-portrait.jpg",
+    "width": 1400,
+    "height": 933,
+    "placement": "About \u203a alternate director image / Team page",
+    "alt": "The Director standing with arms crossed",
+    "layout": "Secondary portrait; use if a second director image is needed (e.g. Team or Contact page)."
+  },
+  {
+    "file": "03-director-in-action/director-action-01-mental-growth-talk.webp",
+    "fallback": "03-director-in-action/director-action-01-mental-growth-talk.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "About \u203a 'Our Work' / Programs \u203a Mentorship",
+    "alt": "The Director speaks to participants during a mental growth session",
+    "layout": "Card or wide feature image 16:9. Caption: 'Mentorship & mental growth sessions'."
+  },
+  {
+    "file": "03-director-in-action/director-action-02-community-session-marsabit.webp",
+    "fallback": "03-director-in-action/director-action-02-community-session-marsabit.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "Community Programs \u203a Marsabit outreach",
+    "alt": "The Director among participants at a community session in Marsabit",
+    "layout": "Feature image 3:2 above/beside the Marsabit outreach text."
+  },
+  {
+    "file": "03-director-in-action/director-action-03-handing-out-books.webp",
+    "fallback": "03-director-in-action/director-action-03-handing-out-books.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "Community Programs \u203a Book donation / impact stats",
+    "alt": "The Director hands books to a pupil during a community visit",
+    "layout": "Pair with impact numbers (books donated, learners reached \u2014 get figures from client)."
+  },
+  {
+    "file": "03-director-in-action/director-action-04-field-visit-marsabit.webp",
+    "fallback": "03-director-in-action/director-action-04-field-visit-marsabit.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "Community Programs / Gallery",
+    "alt": "The Director on a field visit in northern Kenya",
+    "layout": "Wide banner (21:9 crop OK, object-position center 40%) as a section divider, or gallery."
+  },
+  {
+    "file": "04-tuition-and-digital-skills/tuition-01-learners-on-phones.webp",
+    "fallback": "04-tuition-and-digital-skills/tuition-01-learners-on-phones.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "Programs \u203a Tuition card",
+    "alt": "Learners working together in the tuition room",
+    "layout": "Program card image, aspect-ratio 4:3, object-fit cover."
+  },
+  {
+    "file": "04-tuition-and-digital-skills/tuition-02-two-learners-smiling.webp",
+    "fallback": "04-tuition-and-digital-skills/tuition-02-two-learners-smiling.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "Programs \u203a Tuition detail / Testimonials background",
+    "alt": "Two learners smiling at their desks",
+    "layout": "Card or side image next to testimonials."
+  },
+  {
+    "file": "04-tuition-and-digital-skills/tuition-03-adult-learners-desks.webp",
+    "fallback": "04-tuition-and-digital-skills/tuition-03-adult-learners-desks.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "Programs \u203a Adult learning",
+    "alt": "Adult learners studying at their desks",
+    "layout": "Program card image 4:3."
+  },
+  {
+    "file": "04-tuition-and-digital-skills/digital-skills-04-video-presenting.webp",
+    "fallback": "04-tuition-and-digital-skills/digital-skills-04-video-presenting.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "Programs \u203a Digital Skills card",
+    "alt": "A learner presents to a camera during a digital skills session",
+    "layout": "Program card image 4:3; caption 'Digital & media skills'."
+  },
+  {
+    "file": "05-community-programs/community-01-team-walking-village.webp",
+    "fallback": "05-community-programs/community-01-team-walking-village.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "Community Programs \u203a intro / Gallery",
+    "alt": "Team members walking through a village during an outreach visit",
+    "layout": "Wide image 16:9; already brightened."
+  },
+  {
+    "file": "05-community-programs/community-02-team-laughing.webp",
+    "fallback": "05-community-programs/community-02-team-laughing.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "About \u203a Our Team / Gallery",
+    "alt": "Team members sharing a laugh together",
+    "layout": "Team section or gallery tile."
+  },
+  {
+    "file": "06-milestones-and-partners/milestone-01-graduation-tangaza.webp",
+    "fallback": "06-milestones-and-partners/milestone-01-graduation-tangaza.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "About \u203a Milestones timeline",
+    "alt": "A graduate in academic gown at Tangaza University",
+    "layout": "Timeline item image. CONFIRM identity & caption with client before publishing."
+  },
+  {
+    "file": "06-milestones-and-partners/partners-02-director-with-partner-italy.webp",
+    "fallback": "06-milestones-and-partners/partners-02-director-with-partner-italy.jpg",
+    "width": 1200,
+    "height": 1600,
+    "placement": "Partners section / Gallery",
+    "alt": "The Director with an international partner",
+    "layout": "Portrait tile. CONFIRM partner name & consent."
+  },
+  {
+    "file": "07-international-partners-and-visitors/intl-01-volunteer-visit-national-museum.webp",
+    "fallback": "07-international-partners-and-visitors/intl-01-volunteer-visit-national-museum.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "'A Global Community' section",
+    "alt": "A team member and an international volunteer at the National Museums of Kenya",
+    "layout": "Part of a 5-image mosaic (CSS grid, 3 cols desktop / 2 tablet / 1 mobile). Heading idea: 'Partners and friends from around the world'."
+  },
+  {
+    "file": "07-international-partners-and-visitors/intl-02-director-with-partner-laughing.webp",
+    "fallback": "07-international-partners-and-visitors/intl-02-director-with-partner-laughing.jpg",
+    "width": 1600,
+    "height": 1200,
+    "placement": "'A Global Community' section",
+    "alt": "The Director sharing a meal and a laugh with an international partner",
+    "layout": "Mosaic tile (larger tile, spans 2 rows)."
+  },
+  {
+    "file": "07-international-partners-and-visitors/intl-03-learners-helping-each-other.webp",
+    "fallback": "07-international-partners-and-visitors/intl-03-learners-helping-each-other.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "'A Global Community' section",
+    "alt": "Learners from different backgrounds helping each other in class",
+    "layout": "Mosaic tile."
+  },
+  {
+    "file": "07-international-partners-and-visitors/intl-04-mixed-class-group-work.webp",
+    "fallback": "07-international-partners-and-visitors/intl-04-mixed-class-group-work.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "'A Global Community' section",
+    "alt": "A mixed group of learners working together in the tuition room",
+    "layout": "Mosaic tile."
+  },
+  {
+    "file": "07-international-partners-and-visitors/intl-05-academic-procession-scholars.webp",
+    "fallback": "07-international-partners-and-visitors/intl-05-academic-procession-scholars.jpg",
+    "width": 1600,
+    "height": 1067,
+    "placement": "'A Global Community' section / Milestones",
+    "alt": "Scholars from different institutions in academic gowns before a ceremony",
+    "layout": "Mosaic tile."
+  },
+  {
+    "file": "08-video/testimonial-grace.mp4",
+    "poster": "08-video/testimonial-grace-poster.jpg",
+    "width": 1080,
+    "height": 1920,
+    "placement": "Home \u203a Testimonials (and Programs \u203a Tuition)",
+    "alt": "Video testimonial: Grace, a Form 3 student, talks about how tuition at Afro Heritage Consultancies helped her",
+    "layout": "Vertical 9:16 video in a phone-style frame, max-width 360px. controls, playsinline, preload=metadata, poster set, NOT autoplay with sound. Captions are burned in."
+  }
+]
