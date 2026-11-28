@@ -91,12 +91,12 @@ export default function Papers() {
 
   return (
     <Container className="tw:py-14">
-      <SectionTitle eyebrow="Free downloads" title="Past papers & revision" subtitle="Practice questions and answers for 8-4-4 Physics and Mathematics. Free to download, no sign-up needed, with more to come." />
+      <SectionTitle eyebrow="Free downloads" title="Past papers & revision" subtitle="Exam papers, topical questions, marking schemes and revision notes for 8-4-4 Mathematics and Physics. Free to download, no sign-up needed." />
 
       <div className="tw:mb-4 tw:grid tw:gap-3 tw:sm:grid-cols-2 tw:lg:grid-cols-[1fr_200px_200px]">
         <div className="tw:relative tw:sm:col-span-2 tw:lg:col-span-1">
           <IcSearch className="tw:absolute tw:left-4 tw:top-1/2 tw:-translate-y-1/2 tw:text-ink/45" />
-          <input type="search" value={q} onChange={(e) => update("q", e.target.value)} placeholder="Search a topic, e.g. fluid flow" aria-label="Search past papers" className={cx(inputClass, "tw:rounded-full tw:pl-11")} />
+          <input type="search" value={q} onChange={(e) => update("q", e.target.value)} placeholder="Search a topic, e.g. vectors" aria-label="Search past papers" className={cx(inputClass, "tw:rounded-full tw:pl-11")} />
         </div>
         <select value={subject} onChange={(e) => update("subject", e.target.value)} aria-label="Subject" className={cx(inputClass, "tw:rounded-full")}>
           <option value="all">All subjects</option>
@@ -142,7 +142,7 @@ export default function Papers() {
         <ButtonLink to="/programs?category=education" className="tw:shrink-0">See tuition programs</ButtonLink>
       </div>
       <p className="tw:mt-6 tw:text-xs tw:leading-relaxed tw:text-ink/65">
-        Shared for private study. If you own one of these documents and would like it credited or removed,{" "}
+        These materials belong to the teachers, schools and publishers who wrote them and are shared for private study. If you own one and would like it credited or removed,{" "}
         <a href={whatsappLink("Hello AHC, I'm writing about a document on your past papers page.")} target="_blank" rel="noreferrer" className="tw:underline tw:underline-offset-4">tell us on WhatsApp</a>.
       </p>
     </Container>

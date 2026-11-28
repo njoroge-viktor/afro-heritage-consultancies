@@ -71,7 +71,7 @@ The documents are in `public/papers/<subject>/<form>/` and the catalogue is `pub
 1. Put the file in the right folder, with a lowercase-and-hyphens name. Keep it small, since learners download on mobile data.
 2. Add an entry to `public/papers.json` with a new `id`: `title`, `subject`, `level` (`Form 1` … `Form 4` or `Form 1–4`), `type` (`exam`, `questions`, `answers` or `notes`), `credit` (author or school, or `""`), `file`, `format`, `bytes` and `pages` (PDF page count, otherwise `null`). New subjects appear in the filter automatically.
 
-Only add material AHC wrote or has permission to share. Leave out textbooks, KNEC papers, and anything with a copyright notice, publisher, website, school or author's name unless the owner has agreed. Papers waiting for permission can be kept in `held-papers/`, which Git ignores.
+Don't add published textbooks (KLB, Cambridge/Hodder and similar) or KNEC tables. If an owner asks for a document to be credited differently or removed, update or delete its entry and file.
 
 ## Admin
 

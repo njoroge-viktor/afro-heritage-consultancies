@@ -323,7 +323,7 @@ export default function Home() {
           <div data-reveal="left">
             <Eyebrow>Free downloads</Eyebrow>
             <h2 className="tw:mt-3 tw:text-3xl tw:font-semibold tw:leading-tight tw:sm:text-4xl">Past papers & revision</h2>
-            <p className="tw:mt-3 tw:max-w-xl tw:text-ink/70">Practice questions and answers for 8-4-4 Physics and Mathematics, free to download.</p>
+            <p className="tw:mt-3 tw:max-w-xl tw:text-ink/70">Exam papers, topical questions, marking schemes and notes for 8-4-4 Mathematics and Physics, Form 1 to 4.</p>
           </div>
           <ButtonLink to="/past-papers" size="lg" className="tw:shrink-0"><IcDownload /> Browse past papers</ButtonLink>
         </Container>
