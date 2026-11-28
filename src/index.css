@@ -213,10 +213,8 @@ a:hover .icon-pop { transform: rotate(-8deg) scale(1.12); }
 
 /* Space scene on the last hero slide (switched off by the reduced-motion rule below) */
 @keyframes ss-twinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
-@keyframes ss-drift { 0%, 100% { transform: translateY(-5px); } 50% { transform: translateY(5px); } }
 @keyframes ss-halo { 0%, 100% { opacity: 0.8; transform: scale(0.97); } 50% { opacity: 1; transform: scale(1.04); } }
 .ss-twinkle { animation: ss-twinkle 3.6s ease-in-out infinite; }
-.ss-drift { animation: ss-drift 6s ease-in-out infinite; }
 .ss-halo { transform-box: fill-box; transform-origin: center; animation: ss-halo 5s ease-in-out infinite; }
 
 /* ---------- Bootstrap component touches ---------- */

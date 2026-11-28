@@ -1,14 +1,13 @@
 /**
- * Closing slide of the home hero: the AHC logo as the "sun" of a small solar system
- * (planets, a book and a laptop on orbits), in a starfield, above a grass field in
- * the shape of Africa. Everything is drawn in SVG, so it is sharp at any size and
- * adds no image download beyond the logo itself.
+ * Closing slide of the home hero: the AHC logo with a soft halo behind the eagle, in a
+ * starfield, above a grass field in the shape of Africa. Everything is drawn in SVG,
+ * so it is sharp at any size and adds no image download beyond the logo itself.
  *
  * Two layers:
  *  - <SpaceBackdrop>: full-bleed stars and nebula (darkest on the left, behind the hero text).
- *  - <LogoSystem>:    logo, halo, orbits, orbiting bodies and the Africa field, drawn in a
- *                     square box the slide positions (right half on wide screens, centred on phones).
- * Motion (twinkle, drift, halo pulse) uses CSS animations, which index.css switches
+ *  - <LogoSystem>:    logo, halo and the Africa field, drawn in a square box the slide
+ *                     positions (right half on wide screens, centred on phones).
+ * Motion (twinkle, halo pulse) uses CSS animations, which index.css switches
  * off for visitors who prefer reduced motion.
  */
 
@@ -129,59 +128,6 @@ export function SpaceBackdrop({ className }) {
   );
 }
 
-/* ---------- orbiting bodies (drawn around 0,0) ---------- */
-function Book() {
-  return (
-    <g transform="rotate(-14)">
-      <path d="M-34 -18 Q-17 -24 0 -16 L0 20 Q-17 12 -34 18 Z" fill="#c4602f" />
-      <path d="M34 -18 Q17 -24 0 -16 L0 20 Q17 12 34 18 Z" fill="#9c4a22" />
-      <path d="M-31 -16 Q-16 -21 -1 -14 L-1 17 Q-16 10 -31 15 Z" fill="#fbfaf3" />
-      <path d="M31 -16 Q16 -21 1 -14 L1 17 Q16 10 31 15 Z" fill="#efeee3" />
-      <path d="M-26 -9 Q-15 -12 -5 -8 M-26 -2 Q-15 -5 -5 -1 M-26 5 Q-15 2 -5 6 M5 -8 Q15 -12 26 -9 M5 -1 Q15 -5 26 -2 M5 6 Q15 2 26 5" stroke="#b9b6a3" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-    </g>
-  );
-}
-function Laptop() {
-  return (
-    <g transform="rotate(10)">
-      <rect x="-30" y="-36" width="60" height="40" rx="4" fill="#2b2f36" />
-      <rect x="-26" y="-32" width="52" height="32" rx="2" fill="url(#ss-screen)" />
-      <path d="M-20 -24 h22 M-20 -18 h32 M-20 -12 h16" stroke="#e8f7ff" strokeOpacity="0.8" strokeWidth="2.2" strokeLinecap="round" />
-      <path d="M-38 4 H38 L44 13 Q44 16 40 16 H-40 Q-44 16 -44 13 Z" fill="#c9ced6" />
-      <rect x="-9" y="9" width="18" height="3" rx="1.5" fill="#9aa1ab" />
-    </g>
-  );
-}
-function RingedPlanet() {
-  return (
-    <g transform="rotate(-18)">
-      <ellipse cx="0" cy="0" rx="58" ry="14" fill="none" stroke="#e8c48a" strokeOpacity="0.55" strokeWidth="5" />
-      <circle r="30" fill="url(#ss-sand)" />
-      <path d="M-58 0 A58 14 0 0 0 58 0" fill="none" stroke="#f3d9a8" strokeOpacity="0.85" strokeWidth="5" />
-    </g>
-  );
-}
-
-/* orbits: tilted ellipses centred on the logo */
-const SUN = { x: 500, y: 385 };
-const ORBITS = [
-  { rx: 330, ry: 105, tilt: -9 },
-  { rx: 455, ry: 150, tilt: -9 },
-];
-function onOrbit(o, deg) {
-  const a = (deg * Math.PI) / 180, t = (o.tilt * Math.PI) / 180;
-  const x = o.rx * Math.cos(a), y = o.ry * Math.sin(a);
-  return [SUN.x + x * Math.cos(t) - y * Math.sin(t), SUN.y + x * Math.sin(t) + y * Math.cos(t)];
-}
-const BODIES = [
-  { orbit: 1, deg: 200, el: <RingedPlanet />, delay: 0 },
-  { orbit: 0, deg: 152, el: <g transform="scale(1.45)"><Book /></g>, delay: 1.2 },
-  { orbit: 1, deg: 22, el: <g transform="scale(1.4)"><Laptop /></g>, delay: 0.6 },
-  { orbit: 0, deg: 330, el: <circle r="20" fill="url(#ss-blue)" />, delay: 2 },
-  { orbit: 1, deg: 112, el: <circle r="11" fill="url(#ss-red)" />, delay: 1.6 },
-  { orbit: 0, deg: 262, el: <circle r="7" fill="#c9ced6" />, delay: 0.9 },
-];
-
 export function LogoSystem({ className }) {
   return (
     <svg className={className} viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Afro Heritage Consultancies logo">
@@ -191,10 +137,6 @@ export function LogoSystem({ className }) {
           <stop offset="0.35" stopColor="#d3d88e" stopOpacity="0.32" />
           <stop offset="1" stopColor="#d3d88e" stopOpacity="0" />
         </radialGradient>
-        <radialGradient id="ss-sand" cx="35%" cy="35%"><stop offset="0" stopColor="#f6d39a" /><stop offset="1" stopColor="#b8642f" /></radialGradient>
-        <radialGradient id="ss-blue" cx="35%" cy="35%"><stop offset="0" stopColor="#9be3ff" /><stop offset="1" stopColor="#1f4fa8" /></radialGradient>
-        <radialGradient id="ss-red" cx="35%" cy="35%"><stop offset="0" stopColor="#f29b7e" /><stop offset="1" stopColor="#8a2d1c" /></radialGradient>
-        <linearGradient id="ss-screen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#3b82d6" /><stop offset="1" stopColor="#7fd3ff" /></linearGradient>
         <linearGradient id="ss-grass" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#6fd14a" />
           <stop offset="0.5" stopColor="#3aa832" />
@@ -212,21 +154,9 @@ export function LogoSystem({ className }) {
       <path d={BLADES[1]} fill="#4fbf3a" />
       <path d={BLADES[2]} fill="#89e063" />
 
-      {/* orbits, halo behind the eagle, then the logo (screen blend drops its black background) */}
-      {ORBITS.map((o, i) => (
-        <ellipse key={i} cx={SUN.x} cy={SUN.y} rx={o.rx} ry={o.ry} transform={`rotate(${o.tilt} ${SUN.x} ${SUN.y})`} fill="none" stroke="#d3d88e" strokeOpacity="0.28" strokeWidth="1.6" strokeDasharray="2 7" strokeLinecap="round" />
-      ))}
+      {/* halo behind the eagle, then the logo (screen blend drops its black background) */}
       <circle cx="402" cy="356" r="175" fill="url(#ss-halo)" className="ss-halo" />
       <image href="/images/logo-dark.jpg" x="240" y="125" width="520" height="520" style={{ mixBlendMode: "screen" }} />
-
-      {BODIES.map((b, i) => {
-        const [x, y] = onOrbit(ORBITS[b.orbit], b.deg);
-        return (
-          <g key={i} transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}>
-            <g className="ss-drift" style={{ animationDelay: `${b.delay}s` }}>{b.el}</g>
-          </g>
-        );
-      })}
     </svg>
   );
 }
