@@ -32,6 +32,8 @@ const HERO_SLIDES = [
   { name: "director-03-arms-crossed-portrait", position: "57% 30%", split: true },
   { name: "hero-02-youth-media-session", position: "center 40%" },
   { name: "hero-03-smiling-student", position: "70% center" },
+  // Closing brand slide: the logo on black. On phones the headline steps aside so the logo shows on its own.
+  { name: "logo-dark", logo: true },
 ];
 
 /**
@@ -86,7 +88,12 @@ function Hero() {
         <div className="carousel-inner tw:h-full">
           {HERO_SLIDES.map((s, i) => (
             <div key={s.name} className={cx("carousel-item tw:h-full", i === 0 && "active")} aria-roledescription="slide" aria-label={`${i + 1} of ${HERO_SLIDES.length}`}>
-              {s.split ? (
+              {s.logo ? (
+                <div className="tw:relative tw:h-full tw:bg-black">
+                  <img src="/images/logo-dark.jpg" alt="Afro Heritage Consultancies logo" width={800} height={800} loading="lazy" decoding="async"
+                    className="tw:absolute tw:inset-0 tw:m-auto tw:h-auto tw:max-h-[75%] tw:w-[85%] tw:max-w-[560px] tw:object-contain tw:md:left-auto tw:md:right-[4%] tw:md:w-[46%] tw:xl:right-[6%]" />
+                </div>
+              ) : s.split ? (
                 <div className="tw:relative tw:h-full tw:bg-night">
                   <Photo name={s.name} position={s.position} className="tw:absolute tw:inset-y-0 tw:right-0 tw:w-full tw:md:w-1/2 tw:xl:w-[58%]" imgClassName="tw:h-full tw:w-full tw:object-cover" />
                   {/* soften the photo's left edge into the dark panel (left edge only; watermark corner untouched) */}
@@ -101,10 +108,11 @@ function Hero() {
       </div>
       {/* Left-to-right gradient for text contrast. Masked so the bottom-right 20% × 20% (the watermark) stays clear. */}
       {/* Not needed on wider screens while the Director slide shows: its text sits on a plain dark panel. */}
-      <div aria-hidden className={cx("hero-shade tw:pointer-events-none tw:absolute tw:inset-0 tw:z-10 tw:transition-opacity tw:duration-700", HERO_SLIDES[active].split && "tw:md:opacity-0")} />
+      <div aria-hidden className={cx("hero-shade tw:pointer-events-none tw:absolute tw:inset-0 tw:z-10 tw:transition-opacity tw:duration-700", HERO_SLIDES[active].logo ? "tw:opacity-0" : HERO_SLIDES[active].split && "tw:md:opacity-0")} />
 
       <Container className="tw:relative tw:z-10 tw:flex tw:h-full tw:flex-col tw:justify-center tw:pb-16">
-        <div className="enter-left tw:max-w-[78%] tw:sm:max-w-xl tw:md:max-w-[22rem] tw:lg:max-w-[30rem] tw:xl:max-w-xl tw:[text-shadow:0_1px_12px_rgb(0_0_0/0.45)]">
+        <div className={cx("enter-left tw:transition-opacity tw:duration-700", HERO_SLIDES[active].logo && "tw:max-md:invisible tw:max-md:opacity-0")}>
+        <div className="tw:max-w-[78%] tw:sm:max-w-xl tw:md:max-w-[22rem] tw:lg:max-w-[30rem] tw:xl:max-w-xl tw:[text-shadow:0_1px_12px_rgb(0_0_0/0.45)]">
           <p className="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-white">Ngong & Marsabit, Kenya · Community education</p>
           <h1 className="tw:mt-4 tw:text-4xl tw:font-semibold tw:leading-[1.05] tw:sm:text-6xl tw:xl:text-7xl">
             Touching Minds,<br /><span className="tw:italic tw:text-leaf">Educating Hearts</span>
@@ -116,6 +124,7 @@ function Hero() {
             <ButtonLink to="/enroll" size="lg">Enrol now <IcArrowRight className="nudge" /></ButtonLink>
             <ButtonLink to="/programs" size="lg" variant="outline" className="tw:border-white/60 tw:bg-black/20 tw:text-white tw:hover:border-leaf tw:hover:text-leaf">Browse programs</ButtonLink>
           </div>
+        </div>
         </div>
       </Container>
 
