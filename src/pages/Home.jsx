@@ -28,6 +28,8 @@ const faqs = [
 
 const HERO_SLIDES = [
   { name: "hero-01-classroom-ai-lesson", position: "center 30%" },
+  // The Director stands mid-frame, so on wider screens this photo fills the right half (58% on large screens) of the hero and the text sits on plain dark background.
+  { name: "director-03-arms-crossed-portrait", position: "57% 30%", split: true },
   { name: "hero-02-youth-media-session", position: "center 40%" },
   { name: "hero-03-smiling-student", position: "70% center" },
 ];
@@ -84,18 +86,27 @@ function Hero() {
         <div className="carousel-inner tw:h-full">
           {HERO_SLIDES.map((s, i) => (
             <div key={s.name} className={cx("carousel-item tw:h-full", i === 0 && "active")} aria-roledescription="slide" aria-label={`${i + 1} of ${HERO_SLIDES.length}`}>
-              <Photo name={s.name} priority={i === 0} position={s.position} className="tw:h-full" imgClassName="tw:h-full tw:w-full tw:object-cover" />
+              {s.split ? (
+                <div className="tw:relative tw:h-full tw:bg-night">
+                  <Photo name={s.name} position={s.position} className="tw:absolute tw:inset-y-0 tw:right-0 tw:w-full tw:md:w-1/2 tw:xl:w-[58%]" imgClassName="tw:h-full tw:w-full tw:object-cover" />
+                  {/* soften the photo's left edge into the dark panel (left edge only; watermark corner untouched) */}
+                  <div aria-hidden className="tw:absolute tw:inset-y-0 tw:hidden tw:w-[14%] tw:bg-gradient-to-r tw:from-night tw:to-transparent tw:md:left-1/2 tw:md:block tw:xl:left-[42%]" />
+                </div>
+              ) : (
+                <Photo name={s.name} priority={i === 0} position={s.position} className="tw:h-full" imgClassName="tw:h-full tw:w-full tw:object-cover" />
+              )}
             </div>
           ))}
         </div>
       </div>
       {/* Left-to-right gradient for text contrast. Masked so the bottom-right 20% × 20% (the watermark) stays clear. */}
-      <div aria-hidden className="hero-shade tw:pointer-events-none tw:absolute tw:inset-0 tw:z-10" />
+      {/* Not needed on wider screens while the Director slide shows: its text sits on a plain dark panel. */}
+      <div aria-hidden className={cx("hero-shade tw:pointer-events-none tw:absolute tw:inset-0 tw:z-10 tw:transition-opacity tw:duration-700", HERO_SLIDES[active].split && "tw:md:opacity-0")} />
 
       <Container className="tw:relative tw:z-10 tw:flex tw:h-full tw:flex-col tw:justify-center tw:pb-16">
-        <div className="enter-left tw:max-w-[78%] tw:sm:max-w-xl tw:[text-shadow:0_1px_12px_rgb(0_0_0/0.45)]">
+        <div className="enter-left tw:max-w-[78%] tw:sm:max-w-xl tw:md:max-w-[22rem] tw:lg:max-w-[30rem] tw:xl:max-w-xl tw:[text-shadow:0_1px_12px_rgb(0_0_0/0.45)]">
           <p className="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-white">Ngong & Marsabit, Kenya · Community education</p>
-          <h1 className="tw:mt-4 tw:text-4xl tw:font-semibold tw:leading-[1.05] tw:sm:text-6xl tw:lg:text-7xl">
+          <h1 className="tw:mt-4 tw:text-4xl tw:font-semibold tw:leading-[1.05] tw:sm:text-6xl tw:xl:text-7xl">
             Touching Minds,<br /><span className="tw:italic tw:text-leaf">Educating Hearts</span>
           </h1>
           <p className="tw:mt-5 tw:text-base tw:leading-relaxed tw:text-white tw:sm:text-lg">
