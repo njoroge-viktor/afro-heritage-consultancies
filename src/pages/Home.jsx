@@ -8,6 +8,7 @@ import {
 import { ButtonLink, Container, Eyebrow, SectionTitle, cx } from "../components/ui";
 import { EventCard, ProgramCard } from "../components/cards";
 import { Photo, TestimonialVideo } from "../components/media";
+import { LogoSystem, SpaceBackdrop } from "../components/SpaceScene";
 import { seatsLeft, useResource } from "../lib/api";
 import { CATEGORIES, SITE, todayISO, whatsappLink } from "../lib/site";
 
@@ -32,7 +33,8 @@ const HERO_SLIDES = [
   { name: "director-03-arms-crossed-portrait", position: "57% 30%", split: true },
   { name: "hero-02-youth-media-session", position: "center 40%" },
   { name: "hero-03-smiling-student", position: "70% center" },
-  // Closing brand slide: the logo on black. On phones the headline steps aside so the logo shows on its own.
+  // Closing brand slide: the logo as the sun of a small solar system above an Africa-shaped field (components/SpaceScene).
+  // On phones the headline steps aside so the scene shows on its own.
   { name: "logo-dark", logo: true },
 ];
 
@@ -90,8 +92,8 @@ function Hero() {
             <div key={s.name} className={cx("carousel-item tw:h-full", i === 0 && "active")} aria-roledescription="slide" aria-label={`${i + 1} of ${HERO_SLIDES.length}`}>
               {s.logo ? (
                 <div className="tw:relative tw:h-full tw:bg-black">
-                  <img src="/images/logo-dark.jpg" alt="Afro Heritage Consultancies logo" width={800} height={800} loading="lazy" decoding="async"
-                    className="tw:absolute tw:inset-0 tw:m-auto tw:h-auto tw:max-h-[75%] tw:w-[85%] tw:max-w-[560px] tw:object-contain tw:md:left-auto tw:md:right-[4%] tw:md:w-[46%] tw:xl:right-[6%]" />
+                  <SpaceBackdrop className="tw:absolute tw:inset-0 tw:h-full tw:w-full" />
+                  <LogoSystem className="tw:absolute tw:inset-0 tw:h-full tw:w-full tw:md:left-auto tw:md:w-1/2" />
                 </div>
               ) : s.split ? (
                 <div className="tw:relative tw:h-full tw:bg-night">
